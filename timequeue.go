@@ -3,7 +3,7 @@ package timequeue
 import (
 	"fmt"
 	"net/http"
-	"net/url"
+	//"net/url"
 	"time"
 )
 
@@ -28,25 +28,26 @@ func NewTimeQueue() *TimeQueue {
 // provided url.
 func wait(tq *TimeQueue, s *Store) {
 	time.Sleep(s.expiry)
-	tq.Done()
-	resp, err := http.PostForm(s.address,
-		url.Values{"value": {"123"}})
+	resp, err := http.Get(s.address)
+	//resp, err := http.PostForm(s.address,
+	//url.Values{"value": {"123"}})
 
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer resp.Body.Close()
-
-	fmt.Println(resp.Body)
+	fmt.Println(resp.Status)
+	tq.Done()
 }
 
 // Push puts a new item in the queue with a time d in hours
-func (tq *TimeQueue) Push(d float64, id uint64) {
+func (tq *TimeQueue) Push(d float64, id uint64, address string) {
 	tq.count += 1
 	fmt.Println("Put new item")
 	go wait(tq, &Store{
-		expiry: time.Duration(d) * time.Hour,
-		id:     id,
+		expiry:  time.Duration(d) * time.Hour,
+		id:      id,
+		address: address,
 	})
 }
 
