@@ -40,12 +40,12 @@ func wait(tq *TimeQueue, s *Store) {
 	tq.Done()
 }
 
-// Push puts a new item in the queue with a time d in hours
+// Push puts a new item in the queue with a time d in minutes
 func (tq *TimeQueue) Push(d float64, id uint64, address string) {
 	tq.count += 1
 	fmt.Println("Put new item")
 	go wait(tq, &Store{
-		expiry:  time.Duration(d) * time.Hour,
+		expiry:  time.Duration(d) * time.Minute,
 		id:      id,
 		address: address,
 	})
